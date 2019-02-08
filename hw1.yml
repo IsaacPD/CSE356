@@ -1,15 +1,27 @@
 ---
   - hosts: hw1
-    remote_user: ubuntu
+    remote_user: root
 
     tasks:
     - name: ensure apache is installed
       apt:
-        name: apache2=2.4.29-1ubuntu4.5
+        name: apache2=2.4.18-2ubuntu3.9
         state: present
+        update_cache: yes
+      become: yes
+      become_method: sudo
+
     - name: update project
       git:
-        repo: git@github.com:IsaacPD/CSE356.git
-        dest: /var/www/html/
+        repo: https://www.github.com/isaacpd/cse356
+        dest: ~/cse356
         version: HEAD
+        update: yes
+      notify: move web files
+    
+    handlers:
+      - name: move web files
+        shell: cp -t /var/www/html/ /home/ubuntu/cse356/hw0.html /home/ubuntu/cse356/hw1.yml
+        become: yes
+        become_method: sudo
 ...
