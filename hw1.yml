@@ -1,0 +1,15 @@
+---
+  - hosts: hw1
+    remote_user: ubuntu
+
+    tasks:
+    - name: ensure apache is installed
+      apt:
+        name: apache2=2.4.29-1ubuntu4.5
+        state: present
+    - name: update project
+      git:
+        repo: git@github.com:IsaacPD/CSE356.git
+        dest: /var/www/html/
+        version: HEAD
+...
