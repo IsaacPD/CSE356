@@ -8,15 +8,20 @@
         name: apache2=2.4.18-2ubuntu3.9
         state: present
         update_cache: yes
-
+      notify: remove index.html
     - name: update project
       git:
-        repo: https://www.github.com/isaacpd/cse356
+        repo: https://github.com/isaacpd/cse356
         dest: ~/cse356
         update: yes
       notify: move web files
     
     handlers:
+      - name: remove index.html
+        file: 
+          path: /var/www/html/index.html
+          state: absent
       - name: move web files
-        shell: cp -t /var/www/html/ ~/cse356/*
+        shell: cp -t /var/www/html/ ~/cse356/hw*
+      
 ...
