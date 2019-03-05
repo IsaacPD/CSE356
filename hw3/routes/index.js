@@ -4,7 +4,13 @@ var amqp = require('amqplib/callback_api');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+	console.log(req.body);
 	res.render('index', {title: 'Express'});
+});
+
+router.post('/', function (req, res) {
+	console.log(req.body);
+	res.json({status:"OK"});
 });
 
 router.post('/listen', function (req, res) {
