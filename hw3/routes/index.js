@@ -25,7 +25,7 @@ router.post('/listen', function (req, res) {
 				if (err) return res.json({status: "ERROR"});
 				keys.forEach((key) => ch.bindQueue(q.queue, ex, key));
 				ch.consume(q.queue, function (msg) {
-					res.json({msg: msg.content.toString()});g
+					res.json({msg: msg.content.toString()});
 				}, {noAck: false})
 			});
 		});
