@@ -21,11 +21,11 @@ router.post('/listen', function (req, res) {
 			if (err) return res.json({status: "ERROR"});
 			let ex = 'hw3';
 			ch.assertExchange(ex, 'direct');
-			ch.assertQueue('excl', {exclusive: true}, function (err, q) {
+			ch.assertQueue('', {exclusive: true}, function (err, q) {
 				if (err) return res.json({status: "ERROR"});
 				keys.forEach((key) => ch.bindQueue(q.queue, ex, key));
 				ch.consume(q.queue, function (msg) {
-					res.json({msg: msg.content.toString()});
+					res.json({msg: msg.content.toString()});g
 				}, {noAck: false})
 			});
 		});
@@ -42,6 +42,9 @@ router.post('/speak', function (req, res) {
 			ch.publish(ex, key, Buffer.from(msg));
 			res.json({status: "OK"});
 		});
+		setTimeout(function(){
+			conn.close();
+		}, 500);
 	});
 });
 
