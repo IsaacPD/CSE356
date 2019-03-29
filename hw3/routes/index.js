@@ -25,7 +25,9 @@ router.post('/listen', function (req, res) {
 				if (err) return res.json({status: "ERROR"});
 				keys.forEach((key) => ch.bindQueue(q.queue, ex, key));
 				ch.consume(q.queue, function (msg) {
+					console.log("sending:", msg.content.toString());
 					res.json({msg: msg.content.toString()});
+					conn.close();
 				}, {noAck: false})
 			});
 		});
@@ -40,6 +42,7 @@ router.post('/speak', function (req, res) {
 			let ex = 'hw3';
 			ch.assertExchange(ex, 'direct');
 			ch.publish(ex, key, Buffer.from(msg));
+			console.log("message sent:", msg);
 			res.json({status: "OK"});
 		});
 		setTimeout(function(){
