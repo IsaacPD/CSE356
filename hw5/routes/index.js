@@ -14,14 +14,19 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/deposit', upload.single('contents'), function (req, res) {
-	client.execute(add_img, [req.body.filename, req.file])
-		.then((result) => res.json({status: "OK"}, console.log(result)))
+	console.log(req.body.filename);
+	client.execute(add_img, [req.body.filename, req.file.buffer])
+		.then((result) => res.json({status: "OK"}))
 		.catch((err) => res.json({status: "error", error: err.toString()}));
 });
 
 router.get('/retrieve', function (req, res) {
+	console.log(req.query.filename);
 	client.execute(get_img, [req.query.filename])
-		.then((result) => res.send(result), console.log(result))
+		.then(function(result) {
+			res.type(req.query.filename.split('.')[1]);
+			res.send(result.rows[0].contents);
+		})
 		.catch((err) => res.json({status: "error", error: err.toString()}))
 });
 
