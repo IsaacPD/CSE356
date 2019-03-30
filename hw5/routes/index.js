@@ -19,9 +19,9 @@ router.post('/deposit', upload.single('contents'), function (req, res) {
 		.catch((err) => res.json({status: "error", error: err.toString()}));
 });
 
-router.post('/retrieve', function (req, res) {
-	client.execute(get_img, [req.body.filename])
-		.then((result) => res.json({status: "OK"}, console.log(result)))
+router.get('/retrieve', function (req, res) {
+	client.execute(get_img, [req.query.filename])
+		.then((result) => res.send(result), console.log(result))
 		.catch((err) => res.json({status: "error", error: err.toString()}))
 });
 
