@@ -2,7 +2,7 @@ const express = require('express');
 const cassandra = require('cassandra-driver');
 const multer = require('multer');
 const upload = multer();
-const client = new cassandra.Client({localDataCenter: "datacenter1", contactPoints:['127.0.0.1'], keyspace: 'hw5'});
+const client = new cassandra.Client({localDataCenter: "datacenter1", contactPoints: ['127.0.0.1'], keyspace: 'hw5'});
 const router = express.Router();
 
 const add_img = 'INSERT INTO imgs (filename, contents) VALUES (?, ?)';
@@ -14,23 +14,15 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/deposit', upload.single('contents'), function (req, res) {
-	let filename = req.body.filename;
-	let contents = req.body.contents;
-	console.log(filename, req.file);
-	//ient.execute(add_img, [filename, contents])
-	//then((result)=>console.log(result))
-	//catch((err) => console.log(err));
-	res.json({status: "OK"});
+	client.execute(add_img, [req.body.filename, req.file])
+		.then((result) => res.json({status: "OK"}, console.log(result)))
+		.catch((err) => res.json({status: "error", error: err.toString()}));
 });
 
-router.post('/retrieve', function(req, res){
-	let filename = req.body.filename;
-	client.execute(get_img, [filename]).then(function(result){
-		if (result)
-			res.json(result);
-		else
-			res.json({status:"OK"});
-	})
+router.post('/retrieve', function (req, res) {
+	client.execute(get_img, [req.body.filename])
+		.then((result) => res.json({status: "OK"}, console.log(result)))
+		.catch((err) => res.json({status: "error", error: err.toString()}))
 });
 
 module.exports = router;
